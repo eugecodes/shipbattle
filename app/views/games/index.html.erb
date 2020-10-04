@@ -1,0 +1,291 @@
+<p id="notice"><%= notice %></p>
+<script>
+    document.addEventListener("DOMContentLoaded", init, false);
+    var ships ={
+        0:{
+            position_x_inicial: 10,
+            posicion_x_final: 80,
+            posicion_y_inicial: 10,
+            posicion_y_final: 40,
+            pos_real_x_init:64,
+            pos_real_y_init:64,
+            pos_real_x_fin:142,
+            pos_real_y_fin:100,
+            visible: true
+        },
+        1:{
+            position_x_inicial: 10,
+            posicion_x_final: 40,
+            posicion_y_inicial: 90,
+            posicion_y_final: 40,
+            pos_real_x_init:224,
+            pos_real_y_init:63,
+            pos_real_x_fin:302,
+            pos_real_y_fin:102,
+            visible: true
+        },
+        2:{
+            position_x_inicial: 90,
+            posicion_x_final: 40,
+            posicion_y_inicial: 90,
+            posicion_y_final: 40,
+            pos_real_x_init:64,
+            pos_real_y_init:143,
+            pos_real_x_fin:102,
+            pos_real_y_fin:181,
+            visible: true
+        },
+        3:{
+            position_x_inicial: 170,
+            posicion_x_final: 80,
+            posicion_y_inicial: 10,
+            posicion_y_final: 40,
+            pos_real_x_init:144,
+            pos_real_y_init:144,
+            pos_real_x_fin:182,
+            pos_real_y_fin:182,
+            visible: true
+        }
+    };
+    var ships2 ={
+        0:{
+            position_x_inicial: 90,
+            posicion_x_final: 80,
+            posicion_y_inicial: 130,
+            posicion_y_final: 40,
+            pos_real_x_init:604,
+            pos_real_y_init:182,
+            pos_real_x_fin:683,
+            pos_real_y_fin:221,
+            visible: true
+        },
+        1:{
+            position_x_inicial: 10,
+            posicion_x_final: 40,
+            posicion_y_inicial: 90,
+            posicion_y_final: 40,
+            pos_real_x_init:685,
+            pos_real_y_init:64,
+            pos_real_x_fin:763,
+            pos_real_y_fin:101,
+            visible: true
+        },
+        2:{
+            position_x_inicial: 90,
+            posicion_x_final: 40,
+            posicion_y_inicial: 90,
+            posicion_y_final: 40,
+            pos_real_x_init:525,
+            pos_real_y_init:143,
+            pos_real_x_fin:563,
+            pos_real_y_fin:182,
+            visible: true
+        },
+        3:{
+            position_x_inicial: 170,
+            posicion_x_final: 80,
+            posicion_y_inicial: 10,
+            posicion_y_final: 40,
+            pos_real_x_init:605,
+            pos_real_y_init:144,
+            pos_real_x_fin:642,
+            pos_real_y_fin:179,
+            visible: true
+        }
+    };
+    function drawBoard(context){
+        for (var x = 0; x <= bw; x += 40) {
+            context.moveTo(0.5 + x + p, p);
+            context.lineTo(0.5 + x + p, bh + p);
+        }
+
+
+        for (var x = 0; x <= bh; x += 40) {
+            context.moveTo(p, 0.5 + x + p);
+            context.lineTo(bw + p, 0.5 + x + p);
+        }
+
+        context.strokeStyle = "black";
+        context.stroke();
+        
+    }
+    function drawShips(context,context2){
+    $.each(ships,function(a,b){ 
+        //alert(b.position_x_inicial +" "+b.posicion_y_inicial +" "+b.posicion_x_final +" "+b.posicion_y_final);
+        context.fillRect(b.position_x_inicial,b.posicion_y_inicial,b.posicion_x_final,b.posicion_y_final);    
+    });
+    $.each(ships2,function(a,b){ 
+        //alert(b.position_x_inicial +" "+b.posicion_y_inicial +" "+b.posicion_x_final +" "+b.posicion_y_final);
+        context2.fillRect(b.position_x_inicial,b.posicion_y_inicial,b.posicion_x_final,b.posicion_y_final);    
+    });
+    
+    }
+    //grid width and height
+    var bw = 400;
+    var bh = 400;
+    //padding around grid
+    var p = 10;
+    //size of canvas
+    var cw = bw + (p*2) + 1;
+    var ch = bh + (p*2) + 1;
+    
+    function init()
+    {
+        var canvas = $('<canvas id="canvas" />').attr({width: cw, height: ch}).appendTo('#contentc');
+        var canvas2 = $('<canvas id="canvas2" />').attr({width: cw, height: ch}).appendTo('#contentc');
+        var context = canvas.get(0).getContext("2d");
+        var context2 = canvas2.get(0).getContext("2d");
+        var c = document.getElementById("canvas");
+        var c2 = document.getElementById("canvas2");
+        var con1 = c.getContext("2d");
+        drawBoard(context);
+        drawBoard(context2);
+        if(userid==1){
+            //alert("entro");
+            c.addEventListener("mousedown", getPosition, false);
+        }else{
+            //alert("entro2");
+            c2.addEventListener("mousedown", getPosition, false);
+        }
+        drawShips(context,context2);
+    }
+    
+    var getUrlParameter = function getUrlParameter(sParam) {
+        var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+            sURLVariables = sPageURL.split('&'),
+            sParameterName,
+            i;
+
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
+
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? true : sParameterName[1];
+            }
+        }
+    };
+    
+    var userid = getUrlParameter('userid');
+    //alert(userid);
+    
+    function getPosition(event)
+    {
+        
+        var x = event.x;
+        var y = event.y;
+        
+        var barco_hundido = 0;
+        var barco="";
+        
+        if(userid==2) {
+            $.each(ships2,function(a,b){ 
+                //console.log("click");
+                //console.log("x " + x + " - y "+ y);
+                console.log("ship: "+a);
+                //console.log("position_x_inicial "+ b.pos_real_x_init + " - posicion_y_inicial "+ b.pos_real_y_init + " - posicion_x_final" + b.pos_real_x_fin+ " - posicion_y_final " + b.pos_real_y_fin);
+
+                if(x >= b.pos_real_x_init && x <= b.pos_real_x_fin && y >= b.pos_real_y_init && y <= b.pos_real_y_fin){
+                    console.log("clicked");
+                    barco_hundido = 1;
+                    barco = a;
+                }else{
+                    console.log("no clicked");
+                }
+            });
+            
+        }
+        
+        $.each(ships,function(a,b){ 
+            //console.log("click");
+            //console.log("x " + x + " - y "+ y);
+            console.log("ship: "+a);
+            //console.log("position_x_inicial "+ b.pos_real_x_init + " - posicion_y_inicial "+ b.pos_real_y_init + " - posicion_x_final" + b.pos_real_x_fin+ " - posicion_y_final " + b.pos_real_y_fin);
+
+            if(x >= b.pos_real_x_init && x <= b.pos_real_x_fin && y >= b.pos_real_y_init && y <= b.pos_real_y_fin){
+                console.log("clicked");
+                barco_hundido = 1;
+                barco = a;
+            }else{
+                console.log("no clicked");
+            }
+        });
+        
+        
+        
+        
+        $.ajax({
+          type: "POST",
+          url: "/games",
+          data: {game: 
+          { 
+                userid: userid, 
+                shot_position: x + ',' + y, 
+                shot_result: barco_hundido,
+                ship: barco
+          } 
+        },
+        success:function(data) {
+        //alert(data);
+        }
+        ,error:function(error) {
+        }
+        });
+        
+        
+        
+        
+       /* $.post("/games",
+        data: {game: 
+            { 
+            userid: 0, 
+            shot_position: "", 
+            shot_result: true 
+            } 
+        },
+        function(data) {
+              alert(data);
+        });*/
+ 
+        
+        /*var context = canvas.getContext("2d");
+        context.fillStyle = "#000000";
+        context.beginPath();
+        context.arc(x, y, 50, 0, 2*Math.PI);
+        context.fill();*/
+        
+    }
+    
+</script>
+
+<div id="contentc"></div>
+<h1>Games</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Shot Position</th>
+      <th>Shot Result</th>
+      <th>Ship ID</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @games.each do |game| %>
+      <tr>
+        <td><%= game.userid %></td>
+        <td><%= game.shot_position %></td>
+        <td><%= game.shot_result %></td>
+        <td><%= game.ship %></td>
+        <td><%= link_to 'Show', game %></td>
+        <td><%= link_to 'Edit', edit_game_path(game) %></td>
+        <td><%= link_to 'Destroy', game, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Game', new_game_path %>
